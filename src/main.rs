@@ -3,16 +3,17 @@ use ctrlc;
 use std::borrow::Borrow;
 use std::env::{self};
 use std::ffi::OsString;
+use std::fs;
 use std::io::Write;
 use std::process::{exit, Command};
 use std::{fs::read_dir, io};
 fn main() {
+    let path = "/usr/bin;/usr/sbin";
     ctrlc::set_handler(move || {
         io::stdout().flush().unwrap();
         println!("");
     })
     .unwrap();
-    let path = "/usr/bin;/usr/sbin";
     let mut current_dir = env::var("HOME").unwrap();
     loop {
         let mut command = String::new();
@@ -55,6 +56,7 @@ fn main() {
             builtin = true;
         }
         let mut done = false;
+        // refactor this into a modular function
         if !builtin {
             for bindir in path.split(";") {
                 for exec in read_dir(bindir).unwrap() {

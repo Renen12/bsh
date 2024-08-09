@@ -19,7 +19,7 @@ fn main() {
             exit(1);
         }
         if &programargs[1] == "-c" {
-            let mut programargs: Vec<&str> = programargs.iter().map(|s| &**s).collect();
+            let programargs: Vec<&str> = programargs.iter().map(|s| &**s).collect();
             exec(
                 path.to_string(),
                 programargs
@@ -29,8 +29,9 @@ fn main() {
                         exit(1);
                     })
                     .to_string(),
-                programargs.split_off(2),
+                programargs.split_at(3).1.into(),
             );
+            exit(0);
         }
     }
     ctrlc::set_handler(move || {

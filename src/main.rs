@@ -2,17 +2,43 @@ use bsh::*;
 use concatenator::*;
 use ctrlc;
 use std::borrow::Borrow;
+use std::collections::HashMap;
 use std::env::{self};
 use std::io;
 use std::io::Write;
 use std::process::exit;
 fn main() {
     let path = "/usr/bin;/usr/sbin";
+    let mut programargs: Vec<_> = env::args().collect();
+    if &programargs.len() > &1 {
+        if programargs[1] == "--help" {
+            println!(
+                "{} -c [Command] or {} with no arguments",
+                &programargs[0], &programargs[0]
+            );
+            exit(1);
+        }
+        if &programargs[1] == "-c" {
+            let mut programargs: Vec<&str> = programargs.iter().map(|s| &**s).collect();
+            exec(
+                path.to_string(),
+                programargs
+                    .get(2)
+                    .unwrap_or_else(|| {
+                        eprintln!("No command was supplied to -c.");
+                        exit(1);
+                    })
+                    .to_string(),
+                programargs.split_off(2),
+            );
+        }
+    }
     ctrlc::set_handler(move || {
         io::stdout().flush().unwrap();
         println!("");
     })
     .unwrap();
+    let mut envvars: HashMap<String, String> = HashMap::new();
     let mut current_dir = env::var("HOME").unwrap();
     loop {
         let mut command = String::new();
@@ -53,6 +79,22 @@ fn main() {
                 }
             }
             builtin = true;
+        }
+        if command == "-" {
+            let mut exit = false;
+            if args.len() < 2 {
+                println!("\"-\" - Set a variable. - = [Variable] [Value]");
+                exit = true;
+            }
+            if exit != true {
+                if &args[0].to_string() == "=" {
+                    envvars.insert(args[1].to_string(), args[2].to_string());
+                } else {
+                    println!("\"-\" - Set a variable. - = [Variable] [Value]");
+                }
+            }
+            builtin = true;
+            env::set_var(args[1], args[2]);
         }
         if !builtin {
             exec(path.to_string(), command.to_string(), args);

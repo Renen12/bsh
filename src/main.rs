@@ -3,11 +3,9 @@ use concatenator::*;
 use ctrlc;
 use std::borrow::Borrow;
 use std::env::{self};
-use std::ffi::OsString;
-use std::fs;
+use std::io;
 use std::io::Write;
-use std::process::{exit, Command};
-use std::{fs::read_dir, io};
+use std::process::exit;
 fn main() {
     let path = "/usr/bin;/usr/sbin";
     ctrlc::set_handler(move || {

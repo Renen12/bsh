@@ -1,4 +1,4 @@
-use bsh::exec;
+use bsh::*;
 use concatenator::*;
 use ctrlc;
 use std::borrow::Borrow;

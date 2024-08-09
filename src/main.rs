@@ -54,7 +54,6 @@ fn main() {
             }
             builtin = true;
         }
-        // refactor this into a modular function
         if !builtin {
             exec(path.to_string(), command.to_string(), args);
         }

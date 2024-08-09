@@ -1,3 +1,4 @@
+use bsh::exec;
 use concatenator::*;
 use ctrlc;
 use std::borrow::Borrow;
@@ -55,27 +56,9 @@ fn main() {
             }
             builtin = true;
         }
-        let mut done = false;
         // refactor this into a modular function
         if !builtin {
-            for bindir in path.split(";") {
-                for exec in read_dir(bindir).unwrap() {
-                    let exec = exec.unwrap().file_name();
-                    if OsString::from(&command) == exec {
-                        io::stdout().flush().unwrap();
-                        match Command::new(&command).args(&args.clone()).status() {
-                            Ok(_) => (),
-                            Err(e) => {
-                                println!("Error executing {}: {}", &command, e);
-                            }
-                        }
-                        done = true;
-                    }
-                }
-            }
-            if !done {
-                println!("{}: command not found", &command);
-            }
+            exec(path.to_string(), command.to_string(), args);
         }
     }
 }

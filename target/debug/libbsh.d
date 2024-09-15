@@ -1,1 +1,1 @@
-/home/ollmod1/Documents/programming/bsh/target/debug/libbsh.rlib: /home/ollmod1/Documents/programming/bsh/src/lib.rs
+/home/olle/programming/bsh/target/debug/libbsh.rlib: /home/olle/programming/bsh/src/lib.rs

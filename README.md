@@ -1,1 +1,1 @@
-A bad shell!!!!!!
+A rust-based simple shell

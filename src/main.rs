@@ -9,7 +9,7 @@ use std::io::Write;
 use std::process::exit;
 fn main() {
     let path = "/usr/bin;/usr/sbin";
-    let mut programargs: Vec<_> = env::args().collect();
+    let programargs: Vec<_> = env::args().collect();
     if &programargs.len() > &1 {
         if programargs[1] == "--help" {
             println!(
@@ -34,11 +34,13 @@ fn main() {
             exit(0);
         }
     }
-    ctrlc::set_handler(move || {
+    match ctrlc::set_handler(move || {
         io::stdout().flush().unwrap();
         println!("");
-    })
-    .unwrap();
+    }) {
+        Ok(_) => (),
+        Err(_) => (),
+    };
     let mut envvars: HashMap<String, String> = HashMap::new();
     let mut current_dir = env::var("HOME").unwrap();
     loop {
@@ -86,6 +88,9 @@ fn main() {
             if args.len() < 2 {
                 println!("\"-\" - Set a variable. - = [Variable] [Value]");
                 exit = true;
+            }
+            if args.len() < 3 {
+                main();
             }
             if exit != true {
                 if &args[0].to_string() == "=" {

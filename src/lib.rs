@@ -1,9 +1,8 @@
-use concatenator::*;
 use std::ffi::OsString;
-use std::fs::{self, read_dir, DirEntry};
+use std::fs::{self};
 use std::io::{self, Write};
 use std::process::Command;
-pub fn exec(path: String, command: String, mut args: Vec<&str>) {
+pub fn exec(path: String, command: String, args: Vec<&str>) {
     let mut done = false;
     for bindir in path.split(";") {
         for exec in fs::read_dir(bindir).unwrap() {
@@ -17,11 +16,13 @@ pub fn exec(path: String, command: String, mut args: Vec<&str>) {
                     }
                 }
                 done = true;
+                break;
             }
         }
         if !done {
             println!("{}: command not found", &command);
             break;
         }
+        break;
     }
 }
